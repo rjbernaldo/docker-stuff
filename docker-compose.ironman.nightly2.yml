@@ -1,0 +1,25 @@
+version: '2'
+services:
+  db:
+    build: ../reverse-ssh
+    ports:
+      - "5432:5432"
+    #volumes:
+      #- /Users/rj/.ssh:/.ssh
+    #command: bash -c "ssh -NgR 5432:localhost:5432 -L 5432:factory-nightly2.cwozfvxlqgbk.us-west-1.rds.amazonaws.com:5432 ec2-user@192.0.5.82 -i /.ssh/pp-nightly.pem"
+    command: bash -c "ssh -o StrictHostKeyChecking=no -NgR 5432:localhost:5432 -L 5432:factory-nightly2.cwozfvxlqgbk.us-west-1.rds.amazonaws.com:5432 ec2-user@192.0.5.82 -i /root/.ssh/pp-nightly.pem"
+
+  ironman:
+    build: ../ironman
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_URL=postgres://ironman:promisepay@db:5432
+    stdin_open: true
+    tty: true
+    ports:
+      - "3000:3000"
+    links:
+      - db
+    volumes:
+      - ../ironman:/myapp
