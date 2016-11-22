@@ -1,0 +1,6 @@
+--require spec_helper
+--require rspec/instafail
+--format RSpec::Instafail
+--format html --out tmp/html/report<%= ENV['TEST_ENV_NUMBER'] %>.html
+--format RspecJunitFormatter --out tmp/rspec<%= ENV['TEST_ENV_NUMBER'] %>.xml
+--format progress
